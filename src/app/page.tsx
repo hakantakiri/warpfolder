@@ -11,7 +11,7 @@ import { getFiles } from "@/domain/usecase/files.usecase"
 export default function Home() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
 	const [files, setFiles] = useState<File[]>([])
-	const [fileDetail, SetFileDetail] = useState<any>({})
+	const [fileDetail, SetFileDetail] = useState<File>({})
 
 	useEffect(() => {
 		const sessionId: string = sessionUsecase.getSession()
@@ -21,8 +21,17 @@ export default function Home() {
 	}, [])
 
 	const showFileDetail = (fileId: string) => {
-		SetFileDetail(files.find((f) => f.fileId === fileId))
+		const selectedFile: File | undefined = files.find(
+			(f) => f.fileId === fileId
+		)
+		if (!selectedFile) return
+		SetFileDetail(selectedFile)
 		SetIsDetailOpen(true)
+	}
+
+	const deleteFile = (fileId: string) => {
+		const newFiles: File[] = files.filter((f) => f.fileId !== fileId)
+		setFiles(newFiles)
 	}
 
 	return (
@@ -37,9 +46,8 @@ export default function Home() {
 					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
 						<FilesTable
 							files={files}
-							onFileMenuClicked={(fileId) =>
-								showFileDetail(fileId)
-							}
+							onShowFileDetail={showFileDetail}
+							onFileDelete={deleteFile}
 						/>
 					</div>
 					{isDetailOpen ? (

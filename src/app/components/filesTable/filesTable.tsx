@@ -1,19 +1,25 @@
-import Image from "next/image"
-import TreedotSvg from "../../components//icons/threedot.svg"
 import File from "@/domain/models/File.model"
-import {
-	Dropdown,
-	DropdownTrigger,
-	DropdownMenu,
-	DropdownSection,
-	DropdownItem,
-} from "@nextui-org/react"
+import { FileMenu } from "../ui/FileMenu"
 
 interface FilesTableProps {
 	files: File[]
-	onFileMenuClicked?: (fileId: string) => void
+	onShowFileDetail: (fileId: string) => void
+	onFileDelete: (fileId: string) => void
 }
 export const FilesTable = (props: FilesTableProps) => {
+	const downloadFile = (fileId: string) => {
+		console.log(`Downloading file ${fileId}`)
+	}
+
+	const viewDetail = (fileId: string) => {
+		props.onShowFileDetail(fileId)
+	}
+
+	const deleteFile = (fileId: string) => {
+		console.log(`Deleting file ${fileId}`)
+		props.onFileDelete(fileId)
+	}
+
 	return (
 		<table className="min-w-full">
 			<thead>
@@ -34,32 +40,12 @@ export const FilesTable = (props: FilesTableProps) => {
 						<td className="px-8"> {file.uploaded}</td>
 						<td className="px-8"> {file.expiresAt}</td>
 						<td className="px-8">
-							<Dropdown>
-								<DropdownTrigger>
-									<button
-										className="flex justify-center items-center p-4 
-                      			border-2 rounded-xl border-transparent  
-                       			hover:bg-indigo-50 hover:border-indigo-50
-                       			active:border-gray-500"
-									>
-										<Image src={TreedotSvg} alt="Menu" />
-									</button>
-								</DropdownTrigger>
-								<DropdownMenu
-									className="flex flex-col w-60 p-8 bg-red-500 border-2 shadow-lg rounded-lg"
-									aria-label="Dynamic Actions"
-								>
-									<DropdownItem className="flex justify-between items-center">
-										Download
-									</DropdownItem>
-									<DropdownItem className="flex justify-between items-center">
-										File information
-									</DropdownItem>
-									<DropdownItem className="flex justify-between items-center">
-										Delete
-									</DropdownItem>
-								</DropdownMenu>
-							</Dropdown>
+							<FileMenu
+								fileId={file.fileId}
+								onDownload={downloadFile}
+								onViewDetail={viewDetail}
+								onDelete={deleteFile}
+							/>
 						</td>
 					</tr>
 				))}
