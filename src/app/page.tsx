@@ -37,12 +37,12 @@ export default function Home() {
 	return (
 		<>
 			<Navbar />
-			<main>
+			<main className="h-screen">
 				<section className="flex justify-center space-x-8 p-16">
 					<PrimaryButton text={"UPLOAD"} />
 					<PrimaryButton text={"SHARE"} />
 				</section>
-				<section className={`flex container mx-auto h-screen`}>
+				<section className={`flex container mx-auto`}>
 					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
 						<FilesTable
 							files={files}

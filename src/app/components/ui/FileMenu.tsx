@@ -23,6 +23,7 @@ export const FileMenu = (props: FileMenuProps) => {
     border-2 rounded-xl border-transparent  
     hover:bg-indigo-50 hover:border-indigo-50
     active:border-gray-500
+	focus:outline-none
     hover:cursor-pointer`
 
 	return (
@@ -32,7 +33,8 @@ export const FileMenu = (props: FileMenuProps) => {
 					className="flex justify-center items-center p-4 
                       			border-2 rounded-xl border-transparent  
                        			hover:bg-indigo-50 hover:border-indigo-50
-                       			active:border-gray-500"
+                       			active:border-gray-500
+								focus:outline-none"
 				>
 					<Image src={ThreeDotSvg} alt="Menu" />
 				</button>
