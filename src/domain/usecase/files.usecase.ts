@@ -26,14 +26,14 @@ const getFiles = async (): Promise<File[]> => {
 			expiresAt: "1234qerqw",
 			userId: "sdlafjkhalskdjfhlaksdjhf",
 		},
-		// {
-		// 	fileId: "jdfjfjfdjfdj0fe0",
-		// 	name: "audio.mp3",
-		// 	previewUrl: "audi8383",
-		// 	uploaded: "1234qerqw",
-		// 	expiresAt: "1234qerqw",
-		// 	userId: "dfjaodifj0",
-		// },
+		{
+			fileId: "jdfjfjfdjfdj0fe0",
+			name: "audio.mp3",
+			previewUrl: "audi8383",
+			uploaded: "1234qerqw",
+			expiresAt: "1234qerqw",
+			userId: "dfjaodifj0",
+		},
 	]
 
 	return files

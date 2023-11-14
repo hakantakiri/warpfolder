@@ -7,6 +7,7 @@ import { FilesTable } from "./components/filesTable/filesTable"
 import { DetailSideBar } from "./components/detailSideBar/detailSideBar"
 import File from "@/domain/models/File.model"
 import { getFiles } from "@/domain/usecase/files.usecase"
+import { Footer } from "./components/ui/Footer"
 
 export default function Home() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
@@ -30,19 +31,19 @@ export default function Home() {
 	}
 
 	const deleteFile = (fileId: string) => {
-		const newFiles: File[] = files.filter((f) => f.fileId !== fileId)
-		setFiles(newFiles)
+		const filteredFiles: File[] = files.filter((f) => f.fileId !== fileId)
+		setFiles(filteredFiles)
 	}
 
 	return (
-		<>
+		<main className="flex flex-col h-screen justify-between">
 			<Navbar />
-			<main className="h-screen">
-				<section className="flex justify-center space-x-8 p-16">
+			<div className="flex flex-col h-full">
+				<section className="flex justify-center space-x-8 p-16 ">
 					<PrimaryButton text={"UPLOAD"} />
 					<PrimaryButton text={"SHARE"} />
 				</section>
-				<section className={`flex container mx-auto`}>
+				<section className={`flex container mx-auto h-full `}>
 					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
 						<FilesTable
 							files={files}
@@ -55,13 +56,19 @@ export default function Home() {
 							<DetailSideBar
 								file={fileDetail}
 								onClose={() => SetIsDetailOpen(false)}
+								onDownload={() => {}}
+								onDelete={(fileId) => {
+									deleteFile(fileId)
+									SetIsDetailOpen(false)
+								}}
 							/>
 						</div>
 					) : (
 						<></>
 					)}
 				</section>
-			</main>
-		</>
+			</div>
+			<Footer />
+		</main>
 	)
 }
