@@ -3,12 +3,14 @@ import { FileMenu } from "../ui/FileMenu"
 import Image from "next/image"
 import EmptyCheckboxSvg from "../icons/emptyCheckbox.svg"
 import SelectedCheckboxSvg from "../icons/selectedCheckbox.svg"
+import UsedCheckboxSvg from "../icons/usedCheckbox.svg"
 import { useEffect, useState } from "react"
 
 interface FilesTableProps {
 	files: File[]
 	onShowFileDetail: (fileId: string) => void
 	onFileDelete: (fileId: string) => void
+	onFilesSelected: (files: string[]) => void
 }
 
 enum OrderDirectionEnum {
@@ -26,9 +28,16 @@ export const FilesTable = (props: FilesTableProps) => {
 	useEffect(() => {
 		setFiles(props.files)
 		SetSelectedFiles(
-			selectedFiles.filter((id) => props.files.some((f) => f.fileId === id))
+			selectedFiles.filter((id) =>
+				props.files.some((f) => f.fileId === id)
+			)
 		)
 	}, [props])
+
+	useEffect(() => {
+		console.log("invoked")
+		props.onFilesSelected(selectedFiles)
+	}, [selectedFiles])
 
 	const selectFile = (fileId: string) => {
 		if (selectedFiles.find((id) => id === fileId)) {
@@ -107,60 +116,73 @@ export const FilesTable = (props: FilesTableProps) => {
 	}
 
 	return (
-		<table className="min-w-full">
-			<thead>
-				<tr className="text-left border-t-2 border-b-2 border-gray-200">
-					<th className="flex p-8 space-x-4 w-1/2">
-						<Image
-							src={EmptyCheckboxSvg}
-							alt="select icon"
-							onClick={selectAll}
-						/>
-						<span>Name</span>
-						<button onClick={() => orderByColumn("name")}>V</button>
-					</th>
-					<th className="p-8">Uploaded</th>
-					<th className="p-8">Expires</th>
-					<th className="p-10">Menu</th>
-				</tr>
-			</thead>
-			<tbody>
-				{files.map((file) => (
-					<tr
-						key={file.fileId}
-						className={`h-24 
+		<div>
+			{/* <UsageBar files /> */}
+			<table className="min-w-full">
+				<thead>
+					<tr className="text-left border-t-2 border-b-2 border-gray-200">
+						<th className="flex p-8 space-x-4 w-1/2">
+							<Image
+								src={
+									selectedFiles.length == 0
+										? EmptyCheckboxSvg
+										: files.length == selectedFiles.length
+										? SelectedCheckboxSvg
+										: UsedCheckboxSvg
+								}
+								alt="select icon"
+								onClick={selectAll}
+							/>
+							<span>Name</span>
+							<button onClick={() => orderByColumn("name")}>
+								V
+							</button>
+						</th>
+						<th className="p-8">Uploaded</th>
+						<th className="p-8">Expires</th>
+						<th className="p-10">Menu</th>
+					</tr>
+				</thead>
+				<tbody>
+					{files.map((file) => (
+						<tr
+							key={file.fileId}
+							className={`h-24 
 						${
 							selectedFiles.find((id) => id === file.fileId)
 								? `bg-blue-100 hover:bg-blue-200 border-t-2 border-b-2 border-blue-100`
 								: `hover:bg-gray-50 border-t-2 border-b-2 border-gray-100`
 						}
 						hover:cursor-pointer cursor-none`}
-						onClick={() => selectFile(file.fileId)}
-					>
-						<td className="flex items-center p-8 space-x-4">
-							<Image
-								src={
-									selectedFiles.find((id) => id === file.fileId)
-										? SelectedCheckboxSvg
-										: EmptyCheckboxSvg
-								}
-								alt={`Select file ${file.name}`}
-							/>
-							<span>{file.name}</span>
-						</td>
-						<td className="px-8"> {file.uploaded}</td>
-						<td className="px-8"> {file.expiresAt}</td>
-						<td className="px-8">
-							<FileMenu
-								fileId={file.fileId}
-								onDownload={downloadFile}
-								onViewDetail={viewDetail}
-								onDelete={deleteFile}
-							/>
-						</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
+							onClick={() => selectFile(file.fileId)}
+						>
+							<td className="flex items-center p-8 space-x-4">
+								<Image
+									src={
+										selectedFiles.find(
+											(id) => id === file.fileId
+										)
+											? SelectedCheckboxSvg
+											: EmptyCheckboxSvg
+									}
+									alt={`Select file ${file.name}`}
+								/>
+								<span>{file.name}</span>
+							</td>
+							<td className="px-8"> {file.uploaded}</td>
+							<td className="px-8"> {file.expiresAt}</td>
+							<td className="px-8">
+								<FileMenu
+									fileId={file.fileId}
+									onDownload={downloadFile}
+									onViewDetail={viewDetail}
+									onDelete={deleteFile}
+								/>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
 	)
 }
