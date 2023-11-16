@@ -1,11 +1,12 @@
 import File from "@/domain/models/File.model"
 import { FileMenu } from "../ui/FileMenu"
 import Image from "next/image"
+import { useEffect, useState } from "react"
+import { UsageBar } from "../ui/usageBar"
 import EmptyCheckboxSvg from "../icons/emptyCheckbox.svg"
 import SelectedCheckboxSvg from "../icons/selectedCheckbox.svg"
 import UsedCheckboxSvg from "../icons/usedCheckbox.svg"
-import { useEffect, useState } from "react"
-import { UsageBar } from "../ui/usageBar"
+import ArrowSvg from "../icons/arrow.svg"
 
 interface FilesTableProps {
 	files: File[]
@@ -30,7 +31,9 @@ export const FilesTable = (props: FilesTableProps) => {
 	useEffect(() => {
 		setFiles(props.files)
 		SetSelectedFiles(
-			selectedFiles.filter((id) => props.files.some((f) => f.fileId === id))
+			selectedFiles.filter((id) =>
+				props.files.some((f) => f.fileId === id)
+			)
 		)
 	}, [props])
 
@@ -142,11 +145,71 @@ export const FilesTable = (props: FilesTableProps) => {
 								alt="select icon"
 								onClick={selectAll}
 							/>
-							<span>Name</span>
-							<button onClick={() => orderByColumn("name")}>V</button>
+							<button
+								className="flex items-center space-x-4 rounded-md border-2 border-transparent  
+							hover:bg-indigo-50 hover:border-indigo-50
+							active:border-gray-500"
+								onClick={() => orderByColumn("name")}
+							>
+								<span>Name</span>
+								<Image
+									src={ArrowSvg}
+									alt="direction"
+									className={`${
+										orderBy == "name"
+											? orderDirection ===
+											  OrderDirectionEnum.ASC
+												? " rotate-180"
+												: ""
+											: " hidden"
+									}`}
+								/>
+							</button>
 						</th>
-						<th className="p-8">Uploaded</th>
-						<th className="p-8">Expires</th>
+						<th className="p-8">
+							<button
+								className="flex items-center space-x-4 rounded-md border-2 border-transparent  
+							hover:bg-indigo-50 hover:border-indigo-50
+							active:border-gray-500"
+								onClick={() => orderByColumn("uploaded")}
+							>
+								<span>Uploaded</span>
+								<Image
+									src={ArrowSvg}
+									alt="direction"
+									className={`${
+										orderBy == "uploaded"
+											? orderDirection ===
+											  OrderDirectionEnum.ASC
+												? " rotate-180"
+												: ""
+											: " hidden"
+									}`}
+								/>
+							</button>
+						</th>
+						<th className="p-8">
+							<button
+								className="flex items-center space-x-4 rounded-md border-2 border-transparent  
+							hover:bg-indigo-50 hover:border-indigo-50
+							active:border-gray-500"
+								onClick={() => orderByColumn("expiresAt")}
+							>
+								<span>Expires at</span>
+								<Image
+									src={ArrowSvg}
+									alt="direction"
+									className={`${
+										orderBy == "expiresAt"
+											? orderDirection ===
+											  OrderDirectionEnum.ASC
+												? " rotate-180"
+												: ""
+											: " hidden"
+									}`}
+								/>
+							</button>
+						</th>
 						<th className="p-10">Menu</th>
 					</tr>
 				</thead>
@@ -166,7 +229,9 @@ export const FilesTable = (props: FilesTableProps) => {
 							<td className="flex items-center p-8 space-x-4">
 								<Image
 									src={
-										selectedFiles.find((id) => id === file.fileId)
+										selectedFiles.find(
+											(id) => id === file.fileId
+										)
 											? SelectedCheckboxSvg
 											: EmptyCheckboxSvg
 									}
