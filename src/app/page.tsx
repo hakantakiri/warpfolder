@@ -1,96 +1,94 @@
 "use client"
 import sessionUsecase from "@/domain/usecase/session.usecase"
-import { useEffect } from "react"
-import { Navbar } from "./components/navbar/Navbar"
-import { PrimaryButton } from "./components/uploadButton/uploadButton"
-import TreedotSvg from "./components//icons/threedot.svg"
-import Image from "next/image"
+import { useEffect, useState } from "react"
+import { Navbar } from "./components/ui/Navbar"
+import { PrimaryButton } from "./components/ui/uploadButton"
+import { FilesTable } from "./components/ui/filesTable"
+import { DetailSideBar } from "./components/ui/detailSideBar"
+import File from "@/domain/models/File.model"
+import { getFiles } from "@/domain/usecase/files.usecase"
+import { Footer } from "./components/ui/Footer"
 
 export default function Home() {
+	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
+	const [files, setFiles] = useState<File[]>([])
+	const [fileDetail, SetFileDetail] = useState<File>({})
+
 	useEffect(() => {
 		const sessionId: string = sessionUsecase.getSession()
-		console.log(sessionId)
+		getFiles().then(setFiles)
 	}, [])
 
-	const files = [
-		{
-			fileId: "adl;kff389hfp3",
-			name: "document.txt",
-			preview: "asdfasdf",
-			uplaoded: "1234qerqw",
-			expiresAt: "1234qerqw",
-			userId: "sdlafjkhalskdjfhlaksdjhf",
-		},
-		{
-			fileId: "adl;kff389hasasdf",
-			name: "document.txt",
-			preview: "asdfasdf",
-			uplaoded: "1234qerqw",
-			expiresAt: "1234qerqw",
-			userId: "sdlafjkhalskdjfhlaksdjhf",
-		},
-		{
-			fileId: "983479b3kff389hfp3",
-			name: "document.txt",
-			preview: "asdfasdf",
-			uplaoded: "1234qerqw",
-			expiresAt: "1234qerqw",
-			userId: "sdlafjkhalskdjfhlaksdjhf",
-		},
-	]
+	const showFileDetail = (fileId: string) => {
+		const selectedFile: File | undefined = files.find(
+			(f) => f.fileId === fileId
+		)
+		if (!selectedFile) return
+		SetFileDetail(selectedFile)
+		SetIsDetailOpen(true)
+	}
+
+	const filesSelected = (fileIds: string[]) => {
+		console.log(`${fileIds.length} files selected`)
+	}
+
+	const deleteFile = (fileId: string) => {
+		const filteredFiles: File[] = files.filter((f) => f.fileId !== fileId)
+		setFiles(filteredFiles)
+		if (fileDetail?.fileId && fileDetail.fileId === fileId)
+			SetIsDetailOpen(false)
+	}
+
+	const deleteFileGroup = (fileIds: string[]) => {
+		console.log("Delete files:")
+		console.log(fileIds)
+
+		const filteredFiles: File[] = files.filter(
+			(f) => !fileIds.includes(f.fileId)
+		)
+		console.log("filtered files")
+		console.log(filteredFiles)
+		setFiles(filteredFiles)
+		if (fileDetail?.fileId && fileIds.includes(fileDetail.fileId))
+			SetIsDetailOpen(false)
+	}
 
 	return (
-		<>
+		<main className="flex flex-col h-screen justify-between">
 			<Navbar />
-			<main>
-				<section className="flex justify-center space-x-8 p-16">
-					<PrimaryButton
-						onClick={() => console.log("hey")}
-						text={"UPLOAD"}
-					/>
+			<div className="flex flex-col h-full">
+				<section className="flex justify-center space-x-8 p-16 ">
+					<PrimaryButton text={"UPLOAD"} />
 					<PrimaryButton text={"SHARE"} />
 				</section>
-				<section className="container mx-auto">
-					<table className="min-w-full">
-						<thead>
-							<tr className="text-left">
-								<th className="p-8 w-1/2">Name</th>
-								<th className="p-8">Uploaded</th>
-								<th className="p-8">Expires</th>
-								<th className="p-8 px-12">
-									<Image src={TreedotSvg} alt="sandwich" />
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{files.map((file) => (
-								<tr
-									key={file.fileId}
-									className="h-24 hover:bg-gray-50 hover:cursor-pointer"
-								>
-									<td className="px-8"> {file.name}</td>
-									<td className="px-8"> {file.uplaoded}</td>
-									<td className="px-8"> {file.expiresAt}</td>
-									<td className="px-8">
-										<button
-											className="flex justify-center items-center p-4 
-                      border-2 rounded-xl border-transparent  
-                       hover:bg-indigo-50 hover:border-indigo-50
-                       active:border-gray-500
-                    "
-										>
-											<Image
-												src={TreedotSvg}
-												alt="Menu"
-											/>
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+				<section className={`flex container mx-auto h-full `}>
+					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
+						<FilesTable
+							files={files}
+							onShowFileDetail={showFileDetail}
+							onFileDelete={deleteFile}
+							onFilesSelected={filesSelected}
+							onDeleteFileGroup={deleteFileGroup}
+						/>
+					</div>
+					{isDetailOpen ? (
+						<div className={`w-3/12`}>
+							<DetailSideBar
+								file={fileDetail}
+								onClose={() => SetIsDetailOpen(false)}
+								onDownload={() => {}}
+								onDelete={(fileId) => {
+									deleteFile(fileId)
+									SetIsDetailOpen(false)
+								}}
+							/>
+						</div>
+					) : (
+						<></>
+					)}
 				</section>
-			</main>
-		</>
+			</div>
+			<Footer />
+		</main>
 	)
 }
