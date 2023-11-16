@@ -5,12 +5,14 @@ import EmptyCheckboxSvg from "../icons/emptyCheckbox.svg"
 import SelectedCheckboxSvg from "../icons/selectedCheckbox.svg"
 import UsedCheckboxSvg from "../icons/usedCheckbox.svg"
 import { useEffect, useState } from "react"
+import { UsageBar } from "../ui/usageBar"
 
 interface FilesTableProps {
 	files: File[]
 	onShowFileDetail: (fileId: string) => void
 	onFileDelete: (fileId: string) => void
 	onFilesSelected: (files: string[]) => void
+	onDeleteFileGroup: (fileIds: string[]) => void
 }
 
 enum OrderDirectionEnum {
@@ -28,14 +30,11 @@ export const FilesTable = (props: FilesTableProps) => {
 	useEffect(() => {
 		setFiles(props.files)
 		SetSelectedFiles(
-			selectedFiles.filter((id) =>
-				props.files.some((f) => f.fileId === id)
-			)
+			selectedFiles.filter((id) => props.files.some((f) => f.fileId === id))
 		)
 	}, [props])
 
 	useEffect(() => {
-		console.log("invoked")
 		props.onFilesSelected(selectedFiles)
 	}, [selectedFiles])
 
@@ -115,9 +114,19 @@ export const FilesTable = (props: FilesTableProps) => {
 		props.onFileDelete(fileId)
 	}
 
+	const deleteByListOfFileIds = () => {
+		props.onDeleteFileGroup(selectedFiles)
+	}
+
 	return (
 		<div>
-			{/* <UsageBar files /> */}
+			<section className="flex w-full p-2">
+				<UsageBar
+					files={props.files}
+					selectedFileIds={selectedFiles}
+					onDeleteSelectedFiles={deleteByListOfFileIds}
+				/>
+			</section>
 			<table className="min-w-full">
 				<thead>
 					<tr className="text-left border-t-2 border-b-2 border-gray-200">
@@ -134,9 +143,7 @@ export const FilesTable = (props: FilesTableProps) => {
 								onClick={selectAll}
 							/>
 							<span>Name</span>
-							<button onClick={() => orderByColumn("name")}>
-								V
-							</button>
+							<button onClick={() => orderByColumn("name")}>V</button>
 						</th>
 						<th className="p-8">Uploaded</th>
 						<th className="p-8">Expires</th>
@@ -159,9 +166,7 @@ export const FilesTable = (props: FilesTableProps) => {
 							<td className="flex items-center p-8 space-x-4">
 								<Image
 									src={
-										selectedFiles.find(
-											(id) => id === file.fileId
-										)
+										selectedFiles.find((id) => id === file.fileId)
 											? SelectedCheckboxSvg
 											: EmptyCheckboxSvg
 									}

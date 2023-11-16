@@ -5,7 +5,7 @@ const getUsage = async (): Promise<Usage> => {
 		planId: "124123123123",
 		userId: "2452345245",
 		filesCount: 4,
-		storageSum: 100,
+		storageSum: 98,
 		storageUnit: StorageUnitEnum.MB,
 	}
 	return usage

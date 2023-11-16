@@ -2,11 +2,12 @@ import File from "@/domain/models/File.model"
 import { Usage } from "@/domain/models/Usage.mode"
 import DeleteSvg from "../icons/delete.svg"
 import Image from "next/image"
+import { useEffect, useState } from "react"
+import { getUsage } from "@/domain/usecase/usage.usecase"
 
 interface UsageBarProps {
 	files: File[]
-	usage: Usage
-	selectedFiles: number
+	selectedFileIds: string[]
 	onDeleteSelectedFiles: () => void
 }
 
@@ -14,6 +15,12 @@ const MAX_FILES_COUNT: number = 10
 const MAX_STORAGE_SUM_IN_MB: number = 1000
 
 export const UsageBar = (props: UsageBarProps) => {
+	const [usage, setUsage] = useState<Usage>()
+
+	useEffect(() => {
+		getUsage().then(setUsage)
+	}, [props.files])
+
 	const DeleteGroupButton = (
 		<button
 			className="flex space-x-2 p-2
@@ -24,7 +31,7 @@ export const UsageBar = (props: UsageBarProps) => {
 			onClick={props.onDeleteSelectedFiles}
 		>
 			<Image src={DeleteSvg} alt="delete" />
-			<span>Delete {props.selectedFiles} files</span>
+			<span>Delete {props.selectedFileIds.length} files</span>
 		</button>
 	)
 	return (
@@ -32,28 +39,24 @@ export const UsageBar = (props: UsageBarProps) => {
 			<div className="flex space-x-8 p-4">
 				<div>
 					{props.files.length > 0
-						? `${props.files.length} file${
-								props.files.length ? "s," : ","
-						  } ${
+						? `${props.files.length} file${props.files.length ? "s," : ","} ${
 								MAX_FILES_COUNT - props.files.length
 						  } uploads left `
 						: ""}
 				</div>
 				<div>
-					{props.usage
-						? `${props.usage?.storageSum} ${
-								props.usage?.storageUnit
-						  } in total, ${
-								MAX_STORAGE_SUM_IN_MB - props.usage?.storageSum
+					{usage
+						? `${usage?.storageSum} ${usage?.storageUnit} in total, ${
+								MAX_STORAGE_SUM_IN_MB - usage?.storageSum
 						  } MB left`
 						: `Loading usage ...`}
 				</div>
 			</div>
 
 			<div>
-				{props.selectedFiles ? (
+				{props.selectedFileIds.length > 0 ? (
 					<div className="flex space-x-8 items-center">
-						<span>{props.selectedFiles} files selected</span>
+						<span>{props.selectedFileIds.length} files selected</span>
 						{DeleteGroupButton}
 					</div>
 				) : (

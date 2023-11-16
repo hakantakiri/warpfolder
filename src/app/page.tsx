@@ -8,21 +8,15 @@ import { DetailSideBar } from "./components/detailSideBar/detailSideBar"
 import File from "@/domain/models/File.model"
 import { getFiles } from "@/domain/usecase/files.usecase"
 import { Footer } from "./components/ui/Footer"
-import { getUsage } from "@/domain/usecase/usage.usecase"
-import { Usage } from "@/domain/models/Usage.mode"
-import { UsageBar } from "./components/ui/usageBar"
 
 export default function Home() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
 	const [files, setFiles] = useState<File[]>([])
-	const [selectedFiles, setSelectedFiles] = useState<string[]>()
-	const [usage, setUsage] = useState<Usage>()
 	const [fileDetail, SetFileDetail] = useState<File>({})
 
 	useEffect(() => {
 		const sessionId: string = sessionUsecase.getSession()
 		getFiles().then(setFiles)
-		getUsage().then(setUsage)
 	}, [])
 
 	const showFileDetail = (fileId: string) => {
@@ -36,7 +30,6 @@ export default function Home() {
 
 	const filesSelected = (fileIds: string[]) => {
 		console.log(`${fileIds.length} files selected`)
-		// setSelectedFiles(fileIds)
 	}
 
 	const deleteFile = (fileId: string) => {
@@ -46,9 +39,18 @@ export default function Home() {
 			SetIsDetailOpen(false)
 	}
 
-	const deleteSelectedFiles = () => {
+	const deleteFileGroup = (fileIds: string[]) => {
 		console.log("Delete files:")
-		console.log(selectedFiles)
+		console.log(fileIds)
+
+		const filteredFiles: File[] = files.filter(
+			(f) => !fileIds.includes(f.fileId)
+		)
+		console.log("filtered files")
+		console.log(filteredFiles)
+		setFiles(filteredFiles)
+		if (fileDetail?.fileId && fileIds.includes(fileDetail.fileId))
+			SetIsDetailOpen(false)
 	}
 
 	return (
@@ -59,14 +61,6 @@ export default function Home() {
 					<PrimaryButton text={"UPLOAD"} />
 					<PrimaryButton text={"SHARE"} />
 				</section>
-				<section className="flex container mx-auto p-4">
-					<UsageBar
-						files={files}
-						usage={usage}
-						selectedFiles={0}
-						onDeleteSelectedFiles={deleteSelectedFiles}
-					/>
-				</section>
 				<section className={`flex container mx-auto h-full `}>
 					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
 						<FilesTable
@@ -74,6 +68,7 @@ export default function Home() {
 							onShowFileDetail={showFileDetail}
 							onFileDelete={deleteFile}
 							onFilesSelected={filesSelected}
+							onDeleteFileGroup={deleteFileGroup}
 						/>
 					</div>
 					{isDetailOpen ? (
