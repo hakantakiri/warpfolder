@@ -1,8 +1,8 @@
 import File from "@/domain/models/File.model"
-import { FileMenu } from "../ui/FileMenu"
+import { FileMenu } from "./FileMenu"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { UsageBar } from "../ui/usageBar"
+import { UsageBar } from "./usageBar"
 import EmptyCheckboxSvg from "../icons/emptyCheckbox.svg"
 import SelectedCheckboxSvg from "../icons/selectedCheckbox.svg"
 import UsedCheckboxSvg from "../icons/usedCheckbox.svg"
@@ -29,7 +29,20 @@ export const FilesTable = (props: FilesTableProps) => {
 		useState<OrderDirectionEnum | null>(null)
 
 	useEffect(() => {
-		setFiles(props.files)
+		if (orderBy && orderDirection) {
+			setFiles(
+				props.files.slice().sort((a, b) => {
+					const valueA = a[orderBy] || ""
+					const valueB = b[orderBy] || ""
+					return orderDirection === OrderDirectionEnum.ASC
+						? valueA.localeCompare(valueB)
+						: valueB.localeCompare(valueA)
+				})
+			)
+		} else {
+			setFiles(props.files)
+		}
+
 		SetSelectedFiles(
 			selectedFiles.filter((id) =>
 				props.files.some((f) => f.fileId === id)
