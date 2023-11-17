@@ -10,6 +10,7 @@ import { getFiles } from "@/domain/usecase/files.usecase"
 import { Footer } from "./components/ui/Footer"
 
 export default function Home() {
+	// const [sessionId: string] = useState<string|undefined>()
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
 	const [files, setFiles] = useState<File[]>([])
 	const [fileDetail, SetFileDetail] = useState<File>({})
@@ -56,6 +57,7 @@ export default function Home() {
 	return (
 		<main className="flex flex-col h-screen justify-between">
 			<Navbar />
+			{}
 			<div className="flex flex-col h-full">
 				<section className="flex justify-center space-x-8 p-16 ">
 					<PrimaryButton text={"UPLOAD"} />
