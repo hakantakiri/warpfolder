@@ -1,12 +1,11 @@
+import { getCookie, setCookie } from "typescript-cookie"
 class SessionUsecase {
-	private setSession(sessionId: string): void {
-		localStorage.setItem("sessionId", sessionId)
-	}
+	private setSession(sessionId: string): void {}
 
 	public getSession(): string {
-		let sessionId: string | null = localStorage.getItem("sessionId")
-		sessionId = sessionId ? sessionId : crypto.randomUUID()
-		this.setSession(sessionId)
+		const sessionId: string | undefined =
+			getCookie("sessionId") || crypto.randomUUID()
+		setCookie("sessionId", sessionId)
 		return sessionId
 	}
 }
