@@ -1,5 +1,4 @@
 "use client"
-import sessionUsecase from "@/domain/usecase/session.usecase"
 import { useEffect, useState } from "react"
 import { Navbar } from "./components/ui/Navbar"
 import { PrimaryButton } from "./components/ui/uploadButton"
@@ -8,14 +7,17 @@ import { DetailSideBar } from "./components/ui/detailSideBar"
 import File from "@/domain/models/File.model"
 import { getFiles } from "@/domain/usecase/files.usecase"
 import { Footer } from "./components/ui/Footer"
+import { getCurrentFolderId } from "@/domain/usecase/folder.usecase"
+import { NoSessionHome } from "./components/ui/NoSessionHome"
 
 export default function Home() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
 	const [files, setFiles] = useState<File[]>([])
-	const [fileDetail, SetFileDetail] = useState<File>({})
+	const [fileDetail, SetFileDetail] = useState<File>()
+	const [currentFolderId, setCurrentFolderId] = useState<string | null>()
 
 	useEffect(() => {
-		const sessionId: string = sessionUsecase.getSession()
+		setCurrentFolderId(getCurrentFolderId())
 		getFiles().then(setFiles)
 	}, [])
 
@@ -55,40 +57,46 @@ export default function Home() {
 
 	return (
 		<main className="flex flex-col h-screen justify-between">
-			<Navbar />
-			<div className="flex flex-col h-full">
-				<section className="flex justify-center space-x-8 p-16 ">
-					<PrimaryButton text={"UPLOAD"} />
-					<PrimaryButton text={"SHARE"} />
-				</section>
-				<section className={`flex container mx-auto h-full `}>
-					<div className={isDetailOpen ? `w-9/12` : `w-full`}>
-						<FilesTable
-							files={files}
-							onShowFileDetail={showFileDetail}
-							onFileDelete={deleteFile}
-							onFilesSelected={filesSelected}
-							onDeleteFileGroup={deleteFileGroup}
-						/>
+			{!currentFolderId ? (
+				<NoSessionHome />
+			) : (
+				<>
+					<Navbar />
+					<div className="flex flex-col h-full">
+						<section className="flex justify-center space-x-8 p-16 ">
+							<PrimaryButton text={"UPLOAD"} />
+							<PrimaryButton text={"SHARE"} />
+						</section>
+						<section className={`flex container mx-auto h-full `}>
+							<div className={isDetailOpen ? `w-9/12` : `w-full`}>
+								<FilesTable
+									files={files}
+									onShowFileDetail={showFileDetail}
+									onFileDelete={deleteFile}
+									onFilesSelected={filesSelected}
+									onDeleteFileGroup={deleteFileGroup}
+								/>
+							</div>
+							{isDetailOpen ? (
+								<div className={`w-3/12`}>
+									<DetailSideBar
+										file={fileDetail as File}
+										onClose={() => SetIsDetailOpen(false)}
+										onDownload={() => {}}
+										onDelete={(fileId) => {
+											deleteFile(fileId)
+											SetIsDetailOpen(false)
+										}}
+									/>
+								</div>
+							) : (
+								<></>
+							)}
+						</section>
 					</div>
-					{isDetailOpen ? (
-						<div className={`w-3/12`}>
-							<DetailSideBar
-								file={fileDetail}
-								onClose={() => SetIsDetailOpen(false)}
-								onDownload={() => {}}
-								onDelete={(fileId) => {
-									deleteFile(fileId)
-									SetIsDetailOpen(false)
-								}}
-							/>
-						</div>
-					) : (
-						<></>
-					)}
-				</section>
-			</div>
-			<Footer />
+					<Footer />
+				</>
+			)}
 		</main>
 	)
 }
