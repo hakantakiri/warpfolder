@@ -16,6 +16,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
+			<link rel="icon" href="/favicon.ico" sizes="any" />
 			<meta
 				name="viewport"
 				content="width=device-width, height=device-height, initial-scale=1.0"
