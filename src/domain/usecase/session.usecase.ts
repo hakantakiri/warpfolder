@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "typescript-cookie"
+import { getCookie, setCookie } from "cookies-next"
 class SessionUsecase {
 	private setSession(sessionId: string): void {}
 

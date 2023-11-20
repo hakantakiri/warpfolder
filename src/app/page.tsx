@@ -9,16 +9,19 @@ import { getFiles } from "@/domain/usecase/files.usecase"
 import { Footer } from "./components/ui/Footer"
 import { getCurrentFolderId } from "@/domain/usecase/folder.usecase"
 import { NoSessionHome } from "./components/ui/NoSessionHome"
+import { Loading } from "./components/ui/Loasing"
 
 export default function Home() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
 	const [files, setFiles] = useState<File[]>([])
 	const [fileDetail, SetFileDetail] = useState<File>()
+	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [currentFolderId, setCurrentFolderId] = useState<string | null>()
 
 	useEffect(() => {
 		setCurrentFolderId(getCurrentFolderId())
 		getFiles().then(setFiles)
+		setIsLoading(false)
 	}, [])
 
 	const showFileDetail = (fileId: string) => {
@@ -57,7 +60,9 @@ export default function Home() {
 
 	return (
 		<main className="flex flex-col h-screen justify-between">
-			{!currentFolderId ? (
+			{isLoading ? (
+				<Loading />
+			) : !currentFolderId ? (
 				<NoSessionHome />
 			) : (
 				<>
