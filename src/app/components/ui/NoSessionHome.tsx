@@ -3,6 +3,8 @@ import { MouseEvent, useRef } from "react"
 import { PrimaryButton } from "./uploadButton"
 import LogoSvg from "../icons/logo.svg"
 import Image from "next/image"
+import { requestNewFolder } from "@/domain/usecase/folder.usecase"
+import { Folder } from "@/domain/models/Folder.model"
 
 export const NoSessionHome = () => {
 	const modalRef = useRef<HTMLDivElement>(null)
@@ -16,7 +18,9 @@ export const NoSessionHome = () => {
 		modalRef.current?.classList.remove("hidden")
 	}
 
-	const uploadFirstTime = () => {}
+	const uploadFirstTime = async () => {
+		const newFolder: Folder = await requestNewFolder()
+	}
 
 	return (
 		<section className="flex h-screen items-center justify-center">
@@ -30,7 +34,10 @@ export const NoSessionHome = () => {
 						</h1>
 					</span>
 				</div>
-				<PrimaryButton text="UPLOAD YOUR FIRST FILE" />
+				<PrimaryButton
+					text="UPLOAD YOUR FIRST FILE"
+					onClick={uploadFirstTime}
+				/>
 				<span className="space-x-2">
 					<span>or</span>
 					<a
