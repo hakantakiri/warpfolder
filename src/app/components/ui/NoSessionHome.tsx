@@ -3,6 +3,8 @@ import { MouseEvent, useRef } from "react"
 import { PrimaryButton } from "./uploadButton"
 import LogoSvg from "../icons/logo.svg"
 import Image from "next/image"
+import { requestNewFolder } from "@/domain/usecase/folder.usecase"
+import { Folder } from "@/domain/models/Folder.model"
 
 export const NoSessionHome = () => {
 	const modalRef = useRef<HTMLDivElement>(null)
@@ -15,6 +17,11 @@ export const NoSessionHome = () => {
 		e.preventDefault()
 		modalRef.current?.classList.remove("hidden")
 	}
+
+	const uploadFirstTime = async () => {
+		const newFolder: Folder = await requestNewFolder()
+	}
+
 	return (
 		<section className="flex h-screen items-center justify-center">
 			<div className="flex flex-col items-center space-y-10">
@@ -27,7 +34,10 @@ export const NoSessionHome = () => {
 						</h1>
 					</span>
 				</div>
-				<PrimaryButton text="UPLOAD YOUR FIRST FILE" />
+				<PrimaryButton
+					text="UPLOAD YOUR FIRST FILE"
+					onClick={uploadFirstTime}
+				/>
 				<span className="space-x-2">
 					<span>or</span>
 					<a
@@ -45,9 +55,7 @@ export const NoSessionHome = () => {
 				className="flex items-center justify-center fixed inset-0 bg-gray-800 bg-opacity-75 hidden"
 			>
 				<div className="bg-white p-8 rounded shadow-lg w-1/2">
-					<p className="text-xl font-semibold mb-4">
-						Modal Content Goes Here
-					</p>
+					<p className="text-xl font-semibold mb-4">Modal Content Goes Here</p>
 					<button
 						className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
 						onClick={closeModal}
