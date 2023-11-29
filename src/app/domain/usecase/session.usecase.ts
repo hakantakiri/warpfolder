@@ -1,4 +1,6 @@
 import { getCookie, setCookie } from "cookies-next"
+import folderService from "../service/folder.service"
+import sessionSevice from "../service/session.service"
 class SessionUsecase {
 	private setSession(sessionId: string): void {}
 
@@ -7,6 +9,11 @@ class SessionUsecase {
 			getCookie("sessionId") || crypto.randomUUID()
 		setCookie("sessionId", sessionId)
 		return sessionId
+	}
+
+	public signOut() {
+		folderService.disconnectFolder()
+		sessionSevice.signOut()
 	}
 }
 

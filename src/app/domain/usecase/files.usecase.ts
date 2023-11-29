@@ -1,4 +1,4 @@
-import File from "../models/File.model"
+import File from "../../../shared/models/File.model"
 
 const getFiles = async (): Promise<File[]> => {
 	const files: File[] = [

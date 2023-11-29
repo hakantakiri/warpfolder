@@ -1,21 +1,25 @@
-import { db } from "@/infra/firebaseFirestore"
+import { db } from "@/app/infra/firebaseFirestore"
 import { doc, setDoc } from "firebase/firestore"
-import { Folder } from "../models/Folder.model"
-import { getCookie, setCookie } from "cookies-next"
+import { Folder } from "../../../shared/models/Folder.model"
+import { getCookie, setCookie, deleteCookie } from "cookies-next"
 
 class FolderService {
 	private collection: string
 	private currentFolderId: string | null
+	private FID: string = "currentFolderId"
 
 	constructor() {
 		this.collection = "folders"
-		const currentFolderId: string | null = getCookie("currentFolderId") as
-			| string
-			| null
+		const currentFolderId: string | null = getCookie(this.FID) || null
 		this.currentFolderId = currentFolderId || null
 	}
 
-	public getCurrentFolderId = () => {
+	private removeFolderIdFromCoookie() {
+		deleteCookie(this.FID)
+		this.currentFolderId = null
+	}
+
+	public getCurrentFolderId = (): string | null => {
 		return this.currentFolderId
 	}
 
@@ -25,8 +29,12 @@ class FolderService {
 			ownerId: userId,
 		}
 		await setDoc(doc(db, this.collection, newFolder.folderId), newFolder)
-		setCookie("currentFolderId", newFolder.folderId)
+		setCookie(this.FID, newFolder.folderId)
 		return newFolder
+	}
+
+	public disconnectFolder = () => {
+		this.removeFolderIdFromCoookie()
 	}
 }
 

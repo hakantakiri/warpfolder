@@ -1,4 +1,4 @@
-import File from "@/domain/models/File.model"
+import File from "@/shared/models/File.model"
 import Image from "next/image"
 import CloseSvg from "../icons/close.svg"
 import DownloadSvg from "../icons/download.svg"

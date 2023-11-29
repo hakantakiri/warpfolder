@@ -1,14 +1,11 @@
 import { getCookie } from "cookies-next"
-import sessionSevice from "../service/session.sevice"
+import sessionSevice from "../service/session.service"
 import folderService from "../service/folder.service"
-import { Folder } from "../models/Folder.model"
-import { Session } from "../models/Session.model"
+import { Folder } from "../../../shared/models/Folder.model"
+import { Session } from "../../../shared/models/Session.model"
 
 const getCurrentFolderId = () => {
-	let cookie = getCookie("currentFolderId")
-	console.log("current folder id")
-	console.log(cookie)
-	return getCookie("currentFolderId") || null
+	return folderService.getCurrentFolderId()
 }
 
 const requestNewFolder = async (): Promise<Folder> => {

@@ -1,4 +1,4 @@
-import { StorageUnitEnum, Usage } from "../models/Usage.mode"
+import { StorageUnitEnum, Usage } from "../../../shared/models/Usage.mode"
 
 const getUsage = async (): Promise<Usage> => {
 	const usage: Usage = {
