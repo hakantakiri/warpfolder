@@ -3,12 +3,15 @@ import { useEffect, useState } from "react"
 import { Footer } from "../components/ui/Footer"
 import { Navbar } from "../components/ui/Navbar"
 import { DetailSideBar } from "../components/ui/DetailSideBar"
+import DeleteSvg from "../components/icons/delete.svg"
 import { FilesTable } from "../components/ui/FilesTable"
 import { PrimaryButton } from "../components/ui/UploadButton"
 import { getCurrentFolderId } from "@/app/domain/usecase/folder.usecase"
 import { getFiles } from "@/app/domain/usecase/files.usecase"
 import File from "@/shared/models/File.model"
 import { SideBar } from "../components/ui/SideBar"
+import Image from "next/image"
+import { inherits } from "util"
 
 export default function FolderWorkspace() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
@@ -16,6 +19,7 @@ export default function FolderWorkspace() {
 	const [fileDetail, SetFileDetail] = useState<File>()
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [currentFolderId, setCurrentFolderId] = useState<string | null>()
+	const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false)
 
 	useEffect(() => {
 		setCurrentFolderId(getCurrentFolderId())
@@ -56,14 +60,32 @@ export default function FolderWorkspace() {
 		if (fileDetail?.fileId && fileIds.includes(fileDetail.fileId))
 			SetIsDetailOpen(false)
 	}
+
 	return (
 		<>
-			<div className="grid grid-cols-12 min-h-screen">
-				<div className="col-span-3">
-					<SideBar />
-				</div>
-				<div className="col-span-9 w-full">
-					<Navbar />
+			<div
+				className={`${
+					isSideBarOpen ? `grid grid-cols-12 min-h-screen` : ``
+				} w-full`}
+			>
+				{isSideBarOpen ? (
+					<div className="col-span-3 relative">
+						<SideBar />
+					</div>
+				) : (
+					<></>
+				)}
+
+				<div className={`${isSideBarOpen ? `col-span-9` : ``} w-full`}>
+					<Navbar
+						isSideBarOpen={isSideBarOpen}
+						onOpenSideBar={() => {
+							setIsSideBarOpen(true)
+						}}
+						onCloseSideBar={() => {
+							setIsSideBarOpen(false)
+						}}
+					/>
 					<div className="flex flex-col">
 						<section className="flex justify-center space-x-8 p-16 ">
 							<PrimaryButton text={"UPLOAD"} />

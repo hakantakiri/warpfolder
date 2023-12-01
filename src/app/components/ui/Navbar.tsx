@@ -1,11 +1,17 @@
-import { deleteCookie } from "cookies-next"
 import Image from "next/image"
 import SanwdichSvg from "../icons/sandwich.svg"
+import Expand from "../icons/expand.svg"
 import { useState } from "react"
-import sessionUsecase from "@/app/domain/usecase/session.usecase"
 
-export const Navbar = () => {
+interface NavBarProps {
+	isSideBarOpen: boolean
+	onOpenSideBar: () => void
+	onCloseSideBar: () => void
+}
+
+export const Navbar = (props: NavBarProps) => {
 	const [svgIcon, setSvgIcon] = useState(SanwdichSvg)
+
 	return (
 		<nav className="flex w-full ">
 			<div
@@ -16,11 +22,21 @@ export const Navbar = () => {
 					className="bg-white-100 border-2 border-gray-100 w-16 h-16 
             shadow-lg  rounded-xl flex items-center justify-center hover:bg-indigo-50
              active:border-2 active:border-gray-500"
-					onClick={() => {
-						sessionUsecase.signOut()
-					}}
+					onMouseOver={() =>
+						props.isSideBarOpen ? setSvgIcon(Expand) : setSvgIcon(Expand)
+					}
+					onMouseLeave={() =>
+						props.isSideBarOpen ? setSvgIcon(Expand) : setSvgIcon(SanwdichSvg)
+					}
+					onClick={() =>
+						props.isSideBarOpen ? props.onCloseSideBar() : props.onOpenSideBar()
+					}
 				>
-					<Image src={svgIcon} alt="sandwich" />
+					<Image
+						src={svgIcon}
+						alt="menu button"
+						className={`${props.isSideBarOpen ? `rotate-180` : ``}`}
+					/>
 				</button>
 				<div className="flex items-center">WARP FOLDER</div>
 			</div>
