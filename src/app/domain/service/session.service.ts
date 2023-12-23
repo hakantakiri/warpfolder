@@ -1,9 +1,13 @@
-import { getCookie, setCookie, deleteCookie } from "cookies-next"
+import { getCookie, setCookie, deleteCookie} from "cookies-next"
 import { auth } from "@/app/infra/firebaseAuth"
 import { User as FirebaseSession, signInAnonymously } from "firebase/auth"
 import { Session } from "../../../shared/models/Session.model"
 
+type SignOutListener = () => void
+
 class SessionService {
+	signOutListeners: SignOutListener[] = []
+
 	private setCookieSession(session: Session): void {
 		setCookie("userId", session.userId)
 		setCookie("sessionToken", session.sessionToken)
@@ -52,7 +56,19 @@ class SessionService {
 	public async signOut(): Promise<void> {
 		await auth.signOut()
 		this.deleteSessionCookie()
+		this.emmitSignOut()
 	}
+
+
+	// Listeners
+	public onSignOut(signOutListener: SignOutListener):void {
+		this.signOutListeners.push(signOutListener)
+	}
+
+	private emmitSignOut():void{
+		this.signOutListeners.forEach(l=> l())
+	}
+
 }
 
 export default new SessionService()

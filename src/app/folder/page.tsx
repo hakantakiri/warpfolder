@@ -12,6 +12,8 @@ import File from "@/shared/models/File.model"
 import { SideBar } from "../components/ui/SideBar"
 import Image from "next/image"
 import { inherits } from "util"
+import sessionService from "../domain/service/session.service"
+import { useRouter } from "next/navigation"
 
 export default function FolderWorkspace() {
 	const [isDetailOpen, SetIsDetailOpen] = useState<boolean>(false)
@@ -20,11 +22,15 @@ export default function FolderWorkspace() {
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [currentFolderId, setCurrentFolderId] = useState<string | null>()
 	const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false)
+	const router = useRouter()
 
 	useEffect(() => {
 		setCurrentFolderId(getCurrentFolderId())
 		getFiles().then(setFiles)
 		setIsLoading(false)
+		sessionService.onSignOut(() => {
+			router.refresh()
+		})
 	}, [])
 
 	const showFileDetail = (fileId: string) => {

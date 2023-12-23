@@ -1,6 +1,6 @@
 import Image from "next/image"
 import DeleteSvg from "../../components/icons/delete.svg"
-import sessionUsecase from "@/app/domain/usecase/session.usecase"
+import { deleteCurrentFolder } from "@/app/domain/usecase/folder.usecase"
 
 export const SideBar = () => {
 	return (
@@ -12,18 +12,16 @@ export const SideBar = () => {
 			<div>
 				<ul>
 					<li>
-						<button
-							className="flex p-4 space-x-4"
-							onClick={() => {
-								sessionUsecase.signOut()
-							}}
-						>
+						<button className="flex p-4 space-x-4">
 							<Image src={DeleteSvg} alt="Delete" />
 							<span>Detach folder</span>
 						</button>
 					</li>
 					<li>
-						<button className="flex p-4 space-x-4">
+						<button
+							className="flex p-4 space-x-4"
+							onClick={deleteCurrentFolder}
+						>
 							<Image src={DeleteSvg} alt="Delete" />
 							<span>Delete folder</span>
 						</button>

@@ -24,7 +24,6 @@ export const NoSessionHome = () => {
 		setLoading(true)
 		const newFolder: Folder = await requestNewFolder()
 		router.refresh()
-		setLoading(false)
 	}
 
 	return (

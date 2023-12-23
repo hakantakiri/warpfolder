@@ -1,26 +1,37 @@
 import { db } from "@/app/infra/firebaseFirestore"
-import { doc, setDoc } from "firebase/firestore"
+import { deleteDoc, doc, setDoc } from "firebase/firestore"
 import { Folder } from "../../../shared/models/Folder.model"
 import { getCookie, setCookie, deleteCookie } from "cookies-next"
 
 class FolderService {
 	private collection: string
-	private currentFolderId: string | null
 	private FID: string = "currentFolderId"
 
 	constructor() {
 		this.collection = "folders"
 		const currentFolderId: string | null = getCookie(this.FID) || null
-		this.currentFolderId = currentFolderId || null
+	}
+	private setCurrentFolderIdToCookie(folderId: string){
+		setCookie(this.FID, folderId)
 	}
 
-	private removeFolderIdFromCoookie() {
-		deleteCookie(this.FID)
-		this.currentFolderId = null
+	private getCurrentFolderIdFromCookie(){
+		return getCookie(this.FID) || null
 	}
+
+	private deleteCurrentFolderIdFromCookie(){
+		deleteCookie(this.FID)
+	}
+
+	private removeFolderIdFromCookie() {
+		deleteCookie(this.FID)
+		this.deleteCurrentFolderIdFromCookie()
+	}
+
+	// Public methods
 
 	public getCurrentFolderId = (): string | null => {
-		return this.currentFolderId
+		return this.getCurrentFolderIdFromCookie()
 	}
 
 	public createNewFolder = async (userId: string): Promise<Folder> => {
@@ -29,12 +40,18 @@ class FolderService {
 			ownerId: userId,
 		}
 		await setDoc(doc(db, this.collection, newFolder.folderId), newFolder)
-		setCookie(this.FID, newFolder.folderId)
+		this.setCurrentFolderIdToCookie(newFolder.folderId)
 		return newFolder
 	}
 
 	public disconnectFolder = () => {
-		this.removeFolderIdFromCoookie()
+		this.removeFolderIdFromCookie()
+	}
+
+	public async deleteFolder(folderId: string ): Promise<void> {
+		const resp = await deleteDoc(doc(db, this.collection, folderId))
+		console.log('deletion resp')
+		console.log(resp)
 	}
 }
 
