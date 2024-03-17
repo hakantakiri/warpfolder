@@ -1,5 +1,5 @@
 import { getCookie, setCookie, deleteCookie} from "cookies-next"
-import { auth } from "@/app/infra/firebaseAuth"
+import { auth } from "@/app/_infra/firebaseAuth"
 import { User as FirebaseSession, signInAnonymously } from "firebase/auth"
 import { Session } from "../../../shared/models/Session.model"
 

@@ -1,8 +1,16 @@
 import Image from "next/image"
-import DeleteSvg from "../../components/icons/delete.svg"
-import { deleteCurrentFolder } from "@/app/domain/usecase/folder.usecase"
+import DeleteSvg from "../../_components/icons/delete.svg"
+import ChangeSvg from "../../_components/icons/change.svg"
+import {
+	connectAnotherFolder,
+	deleteCurrentFolder,
+} from "@/app/_domain/usecase/folder.usecase"
 
 export const SideBar = () => {
+	const connectToNewFolder = async () => {
+		const folderId = "1132423"
+		await connectAnotherFolder(folderId)
+	}
 	return (
 		<section
 			className="flex flex-col sticky top-0 bottom-0 left-0 h-screen justify-between
@@ -12,9 +20,9 @@ export const SideBar = () => {
 			<div>
 				<ul>
 					<li>
-						<button className="flex p-4 space-x-4">
-							<Image src={DeleteSvg} alt="Delete" />
-							<span>Detach folder</span>
+						<button className="flex p-4 space-x-4" onClick={connectToNewFolder}>
+							<Image src={ChangeSvg} alt="Delete" />
+							<span>Link another folder</span>
 						</button>
 					</li>
 					<li>

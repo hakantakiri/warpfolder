@@ -1,4 +1,4 @@
-import { db } from "@/app/infra/firebaseFirestore"
+import { db } from "@/app/_infra/firebaseFirestore"
 import { deleteDoc, doc, setDoc } from "firebase/firestore"
 import { Folder } from "../../../shared/models/Folder.model"
 import { getCookie, setCookie, deleteCookie } from "cookies-next"
@@ -32,6 +32,10 @@ class FolderService {
 
 	public getCurrentFolderId = (): string | null => {
 		return this.getCurrentFolderIdFromCookie()
+	}
+
+	public setCurrentFolderId = async (folderId: Folder['folderId']):Promise<void> => {
+		this.setCurrentFolderIdToCookie(folderId)
 	}
 
 	public createNewFolder = async (userId: string): Promise<Folder> => {

@@ -5,10 +5,10 @@ import {
 	DropdownTrigger,
 } from "@nextui-org/react"
 import Image from "next/image"
-import ThreeDotSvg from "../../components/icons/threedot.svg"
-import DownloadSvg from "../../components/icons/download.svg"
-import DeleteSvg from "../../components/icons/delete.svg"
-import InformationSvg from "../../components/icons/information.svg"
+import ThreeDotSvg from "../../_components/icons/threedot.svg"
+import DownloadSvg from "../../_components/icons/download.svg"
+import DeleteSvg from "../../_components/icons/delete.svg"
+import InformationSvg from "../../_components/icons/information.svg"
 
 interface FileMenuProps {
 	fileId: string

@@ -3,7 +3,7 @@ import { Usage } from "@/shared/models/Usage.mode"
 import DeleteSvg from "../icons/delete.svg"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { getUsage } from "@/app/domain/usecase/usage.usecase"
+import { getUsage } from "@/app/_domain/usecase/usage.usecase"
 
 interface UsageBarProps {
 	files: File[]
@@ -39,18 +39,14 @@ export const UsageBar = (props: UsageBarProps) => {
 			<div className="flex space-x-8 p-4">
 				<div>
 					{props.files.length > 0
-						? `${props.files.length} file${
-								props.files.length ? "s," : ","
-						  } ${
+						? `${props.files.length} file${props.files.length ? "s," : ","} ${
 								MAX_FILES_COUNT - props.files.length
 						  } uploads left `
 						: ""}
 				</div>
 				<div>
 					{usage
-						? `${usage?.storageSum} ${
-								usage?.storageUnit
-						  } in total, ${
+						? `${usage?.storageSum} ${usage?.storageUnit} in total, ${
 								MAX_STORAGE_SUM_IN_MB - usage?.storageSum
 						  } MB left`
 						: `Loading usage ...`}
@@ -60,9 +56,7 @@ export const UsageBar = (props: UsageBarProps) => {
 			<div>
 				{props.selectedFileIds.length > 0 ? (
 					<div className="flex space-x-8 items-center">
-						<span>
-							{props.selectedFileIds.length} files selected
-						</span>
+						<span>{props.selectedFileIds.length} files selected</span>
 						{DeleteGroupButton}
 					</div>
 				) : (

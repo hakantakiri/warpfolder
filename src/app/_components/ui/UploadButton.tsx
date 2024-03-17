@@ -11,7 +11,7 @@ export const PrimaryButton = (props: PrimaryButtonProps) => {
 	return (
 		<button
 			className={`flex justify-center items-center h-30 w-60 p-4 
-            shadow-xl border-2 rounded-3xl text-white
+            shadow-xl border-1 rounded-xl text-white
             border-blue-400 bg-blue-400
             hover:bg-blue-700 hover:border-blue-700
             active:shadow-md

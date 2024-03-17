@@ -21,4 +21,16 @@ const deleteCurrentFolder  = async () : Promise<void> => {
 	sessionService.signOut()
 }
 
-export { getCurrentFolderId, requestNewFolder, deleteCurrentFolder }
+const linkToFolder = async (folderId: Folder['folderId']):Promise<void>=> {
+	await folderService.setCurrentFolderId(folderId)
+}
+
+const changeFolder = async (newFolderId: Folder['folderId']): Promise<void> => {
+	const prevFolderId: Folder['folderId']|null = folderService.getCurrentFolderId()
+	if( !prevFolderId){
+		sessionService.signOut()
+	}
+	await folderService.setCurrentFolderId(newFolderId)
+}
+
+export { getCurrentFolderId, requestNewFolder, deleteCurrentFolder, changeFolder , linkToFolder}

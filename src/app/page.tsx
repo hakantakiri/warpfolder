@@ -1,5 +1,5 @@
 import { getCurrentFolderIdBackend } from "../backend/usecases/folder.uc.back"
-import { NoSessionHome } from "./components/ui/NoSessionHome"
+import { NoSessionHome } from "./_components/ui/NoSessionHome"
 import FolderWorkspace from "./folder/page"
 
 export default function Home() {
